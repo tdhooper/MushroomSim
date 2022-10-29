@@ -21,7 +21,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UGrabberComponent* Grabber = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	UGrabberComponent* Grabber;
 
 public:	
 	// Called every frame

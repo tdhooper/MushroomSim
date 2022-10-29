@@ -13,15 +13,11 @@ class ATTEMPT1_API UGrabberComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UGrabberComponent();
-
 protected:
 	UPROPERTY()
 	APlayerController* PlayerController;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 
 	UPROPERTY()
@@ -31,6 +27,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	// Sets default values for this component's properties
+	UGrabberComponent();
+
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;	
 
