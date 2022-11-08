@@ -15,11 +15,17 @@ public:
 	// Sets default values for this actor's properties
 	AOrbitCameraActor(const FObjectInitializer&);
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	float YawSpeed;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	float PitchSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float MinPitchAngle;
+
+	UPROPERTY(EditAnywhere)
+    float MaxPitchAngle;
 
 private:
 
@@ -47,5 +53,9 @@ protected:
 
 	UFUNCTION()
 	void AddControllerYawInput(float Val);
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
 };

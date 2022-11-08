@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "OrbitCameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "OrbitCameraActor.h"
 
 // Sets default values
 AOrbitCameraActor::AOrbitCameraActor(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -16,6 +16,8 @@ AOrbitCameraActor::AOrbitCameraActor(const FObjectInitializer& ObjectInitializer
 
 	YawSpeed = 10;
 	PitchSpeed = 10;
+	MinPitchAngle = -60.0f;
+	MaxPitchAngle = 60.0f;
 
 	Interacting = false;
 }
@@ -37,28 +39,37 @@ void AOrbitCameraActor::ReleasedCallback()
 	Interacting = false;
 }
 
-
 void AOrbitCameraActor::AddControllerPitchInput(float Val)
 {
 	if (!Interacting) return;
 
-	FRotator Rotation = GetActorRotation();
+	FRotator Rotation = SpringArmComponent->GetRelativeRotation();
 
-	Rotation.Pitch += Val * PitchSpeed;
+	Rotation.Pitch = FMath::Clamp(Rotation.Pitch + Val * PitchSpeed, MinPitchAngle, MaxPitchAngle);
 
-	SetActorRotation(Rotation);
+	SpringArmComponent->SetRelativeRotation(Rotation);
 }
 
 void AOrbitCameraActor::AddControllerYawInput(float Val)
 {
 	if (!Interacting) return;
 
-	FRotator Rotation = GetActorRotation();
+	FRotator Rotation = SpringArmComponent->GetRelativeRotation();
 
 	Rotation.Yaw += Val * YawSpeed;
 
-	SetActorRotation(Rotation);
+	SpringArmComponent->SetRelativeRotation(Rotation);
 }
+
+#if WITH_EDITOR
+void AOrbitCameraActor::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	MinPitchAngle = FMath::Clamp(MinPitchAngle, -180.0f, .0f);
+	MaxPitchAngle = FMath::Clamp(MaxPitchAngle, .0f, 180.0f);
+}
+#endif
 
 void AOrbitCameraActor::BindToInput()
 {
